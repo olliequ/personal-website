@@ -1,0 +1,12 @@
+{
+    "extends": ["next/core-web-vitals", "plugin:prettier/recommended"],
+    "ignorePatterns": ["*.config.*"],
+    "rules": {
+        "max-len": [
+            "error",
+            {
+                "code": 300
+            }
+        ]
+    }
+}
