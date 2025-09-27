@@ -7,6 +7,7 @@
     --foreground: #202023;
     --theme-button-background: #805ad5;
     --navbar-background: rgba(255, 255, 255, 0.25);
+    --greeting-card-background: rgba(255, 255, 255, 0.5);
 }
 
 .dark {
@@ -14,6 +15,7 @@
     --foreground: #ffffff;
     --theme-button-background: #fbd38d;
     --navbar-background: rgba(32, 32, 35, 0.5);
+    --greeting-card-background: rgba(255, 255, 255, 0.2);
 }
 
 @theme inline {
