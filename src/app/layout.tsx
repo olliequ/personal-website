@@ -1,18 +1,21 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Quicksand, Fira_Code } from 'next/font/google'
 import { ThemeProvider } from './context/ThemeContext'
 import Navbar from '@/components/Navbar'
 import VoxelModel from '@/components/3DModel'
+import Footer from '@/components/Footer'
 
-const geistSans = Geist({
-    variable: '--font-geist-sans',
+const quicksand = Quicksand({
     subsets: ['latin'],
+    weight: ['300', '400', '500', '600', '700'],
+    variable: '--font-quicksand-sans',
 })
 
-const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
+const firaCode = Fira_Code({
+    variable: '--font-firecode-mono',
     subsets: ['latin'],
+    weight: ['400', '500', '600', '700'],
 })
 
 export const metadata: Metadata = {
@@ -26,7 +29,7 @@ export default function RootLayout({
     children: React.ReactNode
 }>) {
     return (
-        <html lang="en" className="flex h-full">
+        <html lang="en" className="h-full">
             <head>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta name="description" content="Ollie's homepage" />
@@ -41,14 +44,14 @@ export default function RootLayout({
                 <meta property="og:type" content="website" />
                 <title>Ollie</title>
             </head>
-            <body className={`${geistSans.variable} ${geistMono.variable} flex flex-auto flex-col items-center antialiased`}>
+            <body className={`${quicksand.variable} ${firaCode.variable} flex min-h-screen flex-col items-center antialiased`}>
                 <ThemeProvider>
                     <Navbar />
-                    <div className="w-[768px]">
-                        {/* <LazyVoxelDog /> */}
+                    <main className="flex w-[768px] flex-1 flex-col justify-center font-sans">
                         <VoxelModel />
                         {children}
-                    </div>
+                    </main>
+                    <Footer />
                 </ThemeProvider>
             </body>
         </html>

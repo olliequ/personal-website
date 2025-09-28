@@ -14,7 +14,8 @@ export default function NameCard() {
             <div className="flex h-full flex-col items-start gap-4">
                 <p className="text-4xl font-semibold">Oliver Quarm</p>
                 <p className="text-md text-gray-500 dark:text-gray-200">
-                    Founder&apos;s energy, merchant&apos;s instinct, engineer&apos;s craft, analyst&apos;s eye.
+                    I excel at all things TypeScript, React, Rust, Swift and Flutter, and I love building beautiful, performant apps that solve real
+                    problems -- read my blog posts for ramblings!
                 </p>
                 <div className="flex flex-row gap-3">
                     <IconButton

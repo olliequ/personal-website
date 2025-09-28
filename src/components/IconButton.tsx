@@ -22,6 +22,6 @@ export default function IconButton({ href, Icon, className, iconColour }: IconBu
     )
 }
 
-function isExternalLink(href: string): boolean {
+export function isExternalLink(href: string): boolean {
     return /^https?:\/\//i.test(href)
 }
