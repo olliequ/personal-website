@@ -44,7 +44,6 @@ function Model({ isInteracting }: { isInteracting: boolean }) {
 }
 
 export default function VoxelModel() {
-    const controlsRef = useRef(null)
     const [isInteracting, setIsInteracting] = useState(false)
 
     return (
@@ -58,7 +57,6 @@ export default function VoxelModel() {
                     <Model isInteracting={isInteracting} />
 
                     <OrbitControls
-                        ref={controlsRef}
                         makeDefault
                         enableZoom
                         zoomSpeed={0.8}

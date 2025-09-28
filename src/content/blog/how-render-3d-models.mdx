@@ -1,20 +1,76 @@
 ---
 title: 'Guide: How to render 3D models in React'
 description: "You might be thinking -- Ollie, how did you do that cool spinning 3D dog thingy on your website? Here's how!"
-date: '2025-08-12'
+date: '2025-09-28'
 image: '/images/cube.png'
 ---
 
-Your MDX content here. You can **keep** it simple `Markdown` to start.
+You're probably here because you saw the dog on my website and thought it looked cool. Or you happened to plug into Google this exact blog title and my SEO paid off. Either way I'll show you exactly how to get a cool spinny 3D thing into React. For reference, I'm using NextJS,Typescript, and Tailwind for stylings.
 
-```
-const a = 1
-```
+The first thing you'll need is a `.glb` file. Maybe you made it yourself in Blender and exported it, or maybe you found it online. Next, let's go ahead and install the required packages:
+
+`npm i @react-three/drei @react-three/fiber`
+
+Let's go ahead and setup the 'scene'. In my NextJS project I have a models folder in `public` with the glb file in there.
 
 ```typescript
-const a = 1
+import { useGLTF } from '@react-three/drei'
+
+function Model() {
+    const { scene } = useGLTF('/models/dog.glb')
+    return <primitive object={scene} />
+}
 ```
 
-```python
-const a = 1
+Here we're simply using the `useGLTF()` function privided to us by `three` to load the model and place it into a `primitive` type which we'll use in a second.
+
+With our primitive type, we can now place it inside a `Canvas` component provided to us by `three` which is essentially a HTML canvas element. We'll wrap the model with `Suspense` so we have a fallback if anything fails:
+
+```tsx
+import { Canvas, useFrame } from '@react-three/fiber'
+import { OrbitControls, useGLTF } from '@react-three/drei'
+import { Suspense, useRef, useState } from 'react'
+
+export default function VoxelModel() {
+    return (
+        <div className="relative mx-auto h-[640px] w-[640px]">
+            <Canvas dpr={[1, 2]} camera={{ fov: 60, position: [8, 8, 8] }} className="absolute inset-0" shadows>
+                <ambientLight intensity={2} />
+                <directionalLight position={[5, 10, 5]} intensity={1.1} castShadow />
+
+                <Suspense fallback={null}>
+                    <Model />
+                </Suspense>
+            </Canvas>
+        </div>
+    )
+}
 ```
+
+At this point we've got the model in a 640x640 canvas element which you should now see. There's an array of options I've added in as you can see, which are all interchangable. Let's discuss the main points:
+
+- We've made the canvas element absolutely positioned in a parent div. This makes it feel like the model is sitting on top of the background etc.
+- the `camera` prop in the canvas is very import. `fov` dictates how wide of an angle the camera is looking at the model at the very beginning. `[8,8,8]` dictates the starting camera position relative to the model. Adjust these to achieve the starting position you like.
+- `ambientLight` and `directionalLight` are optional -- they subtly change the way light looks hitting the model -- as if a sun was in the scene. If you want shadows in the scene, add the `shadow` and `castShadow` props as I have.
+
+The only thing left to add now is the controls -- so the user can interact with the scene! All we have to do is within the Suspense wrapper, so on the same level as `Model`, is add something called `OrbitControls`. This component will allow us to do the interaction we want:
+
+```tsx
+<OrbitControls
+    makeDefault
+    enableZoom
+    zoomSpeed={0.8}
+    enablePan={false}
+    minDistance={0.5}
+    maxDistance={20}
+    target={[0.25, -0.5, 0]}
+    onStart={() => setIsInteracting(true)}
+    onEnd={() => setIsInteracting(false)}
+/>
+```
+
+The `target` prop is super important. This allows you to adjust the position of the object/model in the canvas. I found my model was a bit off centre and down originally, so I've translated it up by `-0.5` units.
+
+And that's it! You can now interact with the scene. I'll paste the complete file below. Note: This file also includes the code for the introductory spinning of the model before interaction. I'll go over this in a future blog post :-) If you don't want this, just use the code snippets I have above!
+
+Ciao.

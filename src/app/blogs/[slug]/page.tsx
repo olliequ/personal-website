@@ -1,7 +1,11 @@
 import { MDXRemote } from 'next-mdx-remote/rsc'
+import { serialize } from 'next-mdx-remote/serialize'
 import { getPostBySlug, getPostSlugs } from '@/lib/blogs'
 import PageContentWrapper from '@/components/PageContentWrapper'
 import AnimatedWrapper from '@/components/AnimatedWrapper'
+import { rehypePlugins } from '@/lib/mdx'
+import React from 'react'
+import type { JSX } from 'react'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -41,8 +45,27 @@ export default async function Page({ params }: Props) {
                     {meta.date && (
                         <p className="pt-2 pb-10 italic">{`${new Date(meta.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`}</p>
                     )}
-                    {/* MDXRemote compiles at build time in RSC */}
-                    <MDXRemote source={content} />
+                    <div className="markdown-content-block flex flex-col gap-4">
+                        {/* MDXRemote compiles at build time in RSC. It serializes markdown to TSX. */}
+                        <MDXRemote
+                            source={content}
+                            options={{ mdxOptions: { rehypePlugins } }}
+                            components={{
+                                pre: (props: JSX.IntrinsicElements['pre'] & { 'data-language'?: string }) => (
+                                    <>
+                                        <figcaption className="flex items-center justify-between rounded-t-lg border-x border-t border-zinc-200 bg-zinc-100 px-4 py-2 dark:border-zinc-800 dark:bg-zinc-900">
+                                            <span className="text-sm text-zinc-700 dark:text-zinc-300">{props['data-language']}</span>
+                                            {/* <CopyButton text={reactToText(props.children)} /> */}
+                                        </figcaption>
+                                        <pre
+                                            className="relative rounded-t-none rounded-b-lg border border-zinc-200 bg-zinc-100 px-0 py-4 text-4xl text-sm text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-[#abb2bf]"
+                                            {...props}
+                                        />
+                                    </>
+                                ),
+                            }}
+                        />
+                    </div>
                 </div>
             </AnimatedWrapper>
         </PageContentWrapper>
