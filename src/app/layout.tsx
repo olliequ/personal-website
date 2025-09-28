@@ -47,7 +47,7 @@ export default function RootLayout({
             <body className={`${quicksand.variable} ${firaCode.variable} flex min-h-screen flex-col items-center antialiased`}>
                 <ThemeProvider>
                     <Navbar />
-                    <main className="flex w-[768px] flex-1 flex-col justify-center font-sans">
+                    <main className="flex w-[768px] flex-1 flex-col font-sans">
                         <VoxelModel />
                         {children}
                     </main>

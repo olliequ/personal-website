@@ -48,7 +48,7 @@ export default function VoxelModel() {
     const [isInteracting, setIsInteracting] = useState(false)
 
     return (
-        <div className="relative m-auto h-[640px] w-[640px]">
+        <div className="relative mx-auto h-[640px] w-[640px]">
             {/* fov and position to control angle and how zoomed in */}
             <Canvas dpr={[1, 2]} camera={{ fov: 60, position: [8, 8, 8] }} className="absolute inset-0" shadows>
                 <ambientLight intensity={2} />
@@ -65,7 +65,7 @@ export default function VoxelModel() {
                         enablePan={false}
                         minDistance={0.5}
                         maxDistance={20}
-                        target={[0.25, -0.2, 0]} // translate model within the frame (second number for y)
+                        target={[0.25, -0.5, 0]} // translate model within the frame (second number for y)
                         // toggle rotation on drag
                         onStart={() => setIsInteracting(true)}
                         onEnd={() => setIsInteracting(false)}

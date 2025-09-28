@@ -4,7 +4,6 @@ import React from 'react'
 import ThemeButton from './ThemeButton'
 import Image from 'next/image'
 import { Theme, useTheme } from '@/app/context/ThemeContext'
-import { IoLogoGithub } from 'react-icons/io5'
 import Link from 'next/link'
 
 export default function Navbar() {
@@ -32,10 +31,6 @@ export default function Navbar() {
                         <Link href={'/blogs'}>
                             <p className="hover:underline">Blogs</p>
                         </Link>
-                        <div className="flex flex-row items-center gap-1">
-                            <IoLogoGithub />
-                            <p className="hover:underline">Source</p>
-                        </div>
                     </div>
                 </div>
                 <ThemeButton />
