@@ -11,7 +11,7 @@ export default function Blogs() {
 
     return (
         <PageContentWrapper>
-            <AnimatedWrapper delay={0.2}>
+            <AnimatedWrapper delay={0.1}>
                 <InfoSection
                     title="Blog Posts"
                     entries={posts.map((p) => ({

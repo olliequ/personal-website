@@ -43,6 +43,7 @@ body {
     opacity: 0;
     animation: drop-down 1s ease-in-out 1s forwards;
 }
+
 @keyframes drop-down {
     0% {
         top: -100px;
@@ -57,4 +58,17 @@ body {
         top: 0px;
         opacity: 1;
     }
+}
+
+@keyframes grow {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+.animate-grow {
+    animation: grow 3s cubic-bezier(0.2, 1, 0.3, 1) 0.2s forwards;
 }
