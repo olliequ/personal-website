@@ -12,7 +12,7 @@ export default function NameCard() {
                 <Image src={'/images/headshot.jpeg'} alt={'headshot'} fill priority className="object-cover object-center" />
             </div>
             <div className="flex h-full flex-col items-start gap-4">
-                <p className="text-4xl font-semibold">Oliver Quarm</p>
+                <p className="text-4xl font-semibold">Ollie Quarm</p>
                 <p className="text-md text-gray-500 dark:text-gray-200">
                     I excel at all things TypeScript, React, Rust, Swift and Flutter. I love building beautiful, performant apps that solve real
                     problems -- read my blog posts for ramblings!

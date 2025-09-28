@@ -63,6 +63,9 @@ export default async function Page({ params }: Props) {
                                         />
                                     </>
                                 ),
+                                ul: (props) => <ul className="my-3 list-disc space-y-1 pl-6" {...props} />,
+                                ol: (props) => <ol className="my-3 list-decimal space-y-1 pl-6" {...props} />,
+                                li: (props) => <li className="[&>ol]:mt-1 [&>ul]:mt-1" {...props} />,
                             }}
                         />
                     </div>
