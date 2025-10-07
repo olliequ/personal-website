@@ -1,0 +1,114 @@
+---
+title: 'Guide: How to stagger animate in components in React'
+description: "Here's how to do a slick staggering appearance animation of elements in React. This very page uses it to render the very blogs in front of you!"
+date: '2025-10-07'
+image: '/images/newtons-cradle.png'
+---
+
+Any modern website these days needs slick animations (alledgely). A simple, yet highly effective one is the animating 'in' elements on your page as they become visible in the viewport (so as the user scrolls). This guide will show you how you can effectively bring in multiple elements of a page section in a unique, smooth way -- we'll be staggering them in one by one using a fade and y-translate of the element.
+
+We only need 1 dependency for this -- if you're familiar with the Intersection Observer API, then you'll know this well. It's simply a React implementation of the API. Let's install it with:
+
+`npm i react-intersection-observer`
+
+Let's get started. What we're gonna do is render 2 columns of 3 tiles (6 total) whereby they appear individually to give each a unique identity. We're doing a scroll appearance animation, so we're gonna start with a block of height `h-screen` so we have room to scroll down into the tiles to see the animation. At this point you won't see the tiles as they're opacity-0 (change this if you'd like to see them for sanity!).
+
+```typescript
+'use client'
+
+import { useEffect, useRef } from 'react' // React hooks for later
+import { useInView } from 'react-intersection-observer' // Hook we'll use later
+
+export default function Home() {
+    const indexes = Array.from({ length: 6 }, (_, i) => i + 1)
+
+    return (
+        <div className="flex flex-col items-center bg-blue-100 py-[100px]">
+            <div className="h-screen bg-blue-600" /> // Give us room to scroll down into the tiles.
+            <div className="grid grid-cols-2 gap-10">
+                {indexes.map((number, i) => (
+                    <Tile key={i} label={number} />
+                ))}
+            </div>
+        </div>
+    )
+}
+
+const Tile = ({ label }: { label: number }) => {
+    return (
+        <div
+            className="flex h-[200px] w-[200px] translate-y-[30px] items-center justify-center rounded-lg bg-red-200 opacity-0 transition-all duration-[1500ms] ease-out"
+        >
+            <p className="text-xl font-bold text-black">{label}</p>
+        </div>
+    )
+}
+```
+
+Now let's set up the interaction observer and our refs:
+
+```typescript
+const { ref: refInView, inView } = useInView({ threshold: 0.3, triggerOnce: true })
+const containerRef = useRef<HTMLDivElement>(null)
+const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+```
+
+The `useInView` hook provides us with 2 things here: a boolean called `inView` which tells us if the supplied node we give it (`refInView`) is at least 30% in view (see threshold of `0.3`). We're gonna use `containerRef` as a way to store the node (the tile) and manipulate its class properties (opacity and height!). `timeoutRef` is used to store a timeout which we need later to execute the behaviour we want after a certain period of time.
+
+In each tile we're going to supply the `ref` prop with a ref callback as follows:
+
+```typescript
+return (
+    <div
+        ref={ref}
+        className="..."
+    >
+        <p className="text-xl font-bold text-black">{label}</p>
+    </div>
+)
+```
+
+whereby the supplied ref is:
+
+```typescript
+const ref = (node: HTMLDivElement) => {
+    refInView(node)
+    containerRef.current = node
+}
+```
+
+So when our `Tile` component mounts, this callback is going to executed. As you may know, there are 2 valid ref types in React -- object ref, and callback ref which is what we're using here. When this callback is run, we're gonna set the outer div of the tile to the `useInView` hook as the item to observe, and also pass a reference of it to `containerRef` so we have a way of manipulating its class list.
+
+Now it's time for the main part. We want a way such that when our tile comes into view, we to turn on its opacity and animate it 'up' such that its translated upwards in the y direction. `useEffect` is perfect for this! We'll place `inView` in the dependency array:
+
+```typescript
+useEffect(() => {
+    if (!inView) return
+
+    const animate = () => {
+        if (!containerRef) return
+        containerRef.current?.classList.remove('opacity-0', 'translate-y-[30px]')
+        containerRef.current?.classList.add('opacity-100', 'translate-y-[0px]')
+    }
+
+    if (label == 0) {
+        animate()
+    } else {
+        timeoutRef.current = setTimeout(animate, 500 * label)
+    }
+}, [inView, label])
+```
+
+Let's go into this in detail. First we'll define the animation function itself (changing opacity and height as discussed). Then, we'll look at the tiles index. If it's the first tile we'll display it immediately, else we'll stagger it in by multiplying its index by 500 milliseconds. And that's it! Because we're using the `label` for this calculation, React best practices want us to place this into the dependency array.
+
+The last piece of the puzzle is simply clean up -- when the component unmounts we'll clear the timer so we don't have memory leaks:
+
+```typescript
+useEffect(() => {
+    return () => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+}, [])
+```
+
+Checkout our **[website](https://www.nakatomi.com)** to see plentiful examples of this animation in practice as you scroll!
