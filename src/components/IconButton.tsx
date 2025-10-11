@@ -15,7 +15,7 @@ export default function IconButton({ href, Icon, className, iconColour }: IconBu
 
     return (
         <Link target={newTab ? '_blank' : undefined} rel={newTab ? 'noopener noreferrer' : undefined} href={href}>
-            <div className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-200 ${className}`}>
+            <div className={`flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-200 sm:h-10 sm:w-10 ${className}`}>
                 <Icon color={iconColour} size={20} />
             </div>
         </Link>

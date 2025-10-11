@@ -47,7 +47,7 @@ export default function VoxelModel() {
     const [isInteracting, setIsInteracting] = useState(false)
 
     return (
-        <div className="relative mx-auto h-[640px] w-[640px]">
+        <div className="relative mx-auto h-[320px] w-[320px] sm:h-[640px] sm:w-[640px]">
             {/* fov and position to control angle and how zoomed in */}
             <Canvas dpr={[1, 2]} camera={{ fov: 60, position: [8, 8, 8] }} className="absolute inset-0" shadows>
                 <ambientLight intensity={2} />

@@ -36,9 +36,9 @@ export default async function Page({ params }: Props) {
     return (
         <PageContentWrapper size={PageContentWidthOptions.WIDE}>
             <AnimatedWrapper delay={0.2}>
-                <div className="flex w-full flex-col">
+                <div className="flex w-full flex-col px-2 sm:px-0">
                     <div className="flex w-fit flex-col">
-                        <h1 className="text-3xl font-semibold">{meta.title}</h1>
+                        <h1 className="text-2xl font-semibold sm:text-3xl">{meta.title}</h1>
                         <div className="animate-grow h-[2px] w-0 rounded-2xl bg-amber-600" />
                     </div>
                     {meta.date && (
@@ -57,7 +57,7 @@ export default async function Page({ params }: Props) {
                                             {/* <CopyButton text={reactToText(props.children)} /> */}
                                         </figcaption>
                                         <pre
-                                            className="relative rounded-t-none rounded-b-lg border border-zinc-200 bg-zinc-100 px-0 py-4 text-4xl text-sm text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-[#abb2bf]"
+                                            className="relative rounded-t-none rounded-b-lg border border-zinc-200 bg-zinc-100 px-0 py-4 text-sm text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-[#abb2bf]"
                                             {...props}
                                         />
                                     </>

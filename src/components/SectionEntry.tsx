@@ -50,21 +50,34 @@ export default function SectionEntry(props: SectionEntryProps) {
             target={newTab ? '_blank' : undefined}
             rel={newTab ? 'noopener noreferrer' : undefined}
             href={props.href}
-            className={`translate-y-[30px] ${props.index !== undefined ? 'opacity-0' : 'opacity-100'} transition-all duration-500 ease-in-out`}
+            className={`${props.index !== undefined ? 'translate-y-[30px] opacity-0' : 'translate-y-0 opacity-100'} transition-all duration-500 ease-in-out`}
         >
-            <div className="group flex w-full cursor-pointer flex-row gap-6">
-                <Image src={props.imageUrl} alt="mainImage" width={96} height={96} className="h-[96px] w-[96px] rounded-2xl object-contain" />
-                <div className="flex flex-col gap-3">
-                    <h2 className="text-xl font-semibold group-hover:underline">{props.title}</h2>
-                    <p className="text-[15px] text-gray-600 dark:text-gray-300">{props.description}</p>
+            <div className="group flex w-full cursor-pointer flex-row items-center gap-4 sm:items-start sm:gap-6">
+                <Image
+                    src={props.imageUrl}
+                    alt="mainImage"
+                    width={96}
+                    height={96}
+                    className="h-[60px] w-[60px] rounded-2xl object-contain sm:h-[96px] sm:w-[96px]"
+                />
+                <div className="flex flex-col gap-2 sm:gap-3">
+                    <h2 className="text-lg font-semibold group-hover:underline sm:text-xl">{props.title}</h2>
+                    <p className="text-justify text-sm text-gray-600 sm:text-base dark:text-gray-300">{props.description}</p>
                     {props.iconUrls && (
                         <div className="flex flex-row gap-3">
                             {props.iconUrls.map((iconUrl, index) => (
-                                <Image key={index} src={iconUrl} alt={`Icon ${index}`} width={20} height={20} className="h-5 w-5 object-contain" />
+                                <Image
+                                    key={index}
+                                    src={iconUrl}
+                                    alt={`Icon ${index}`}
+                                    width={20}
+                                    height={20}
+                                    className="h-4 w-4 object-contain sm:h-5 sm:w-5"
+                                />
                             ))}
                         </div>
                     )}
-                    {props.subString && <p className="text-xs text-amber-600 italic">{props.subString}</p>}
+                    {props.subString && <p className="text-[10px] text-amber-600 italic sm:text-xs">{props.subString}</p>}
                 </div>
             </div>
         </Link>

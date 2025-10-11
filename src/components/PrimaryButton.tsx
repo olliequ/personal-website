@@ -14,7 +14,7 @@ export default function PrimaryButton({ text, Icon, onClick, downloadResume, hre
     return (
         <Link download={downloadResume ? true : false} href={href} passHref>
             <div
-                className="flex h-10 cursor-pointer flex-row items-center justify-center gap-2 rounded-lg bg-gray-950 px-4 py-2 font-medium text-white transition-all duration-100 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                className="flex h-9 cursor-pointer flex-row items-center justify-center gap-2 rounded-lg bg-gray-950 px-2 py-1 text-sm font-medium text-white transition-all duration-100 hover:bg-gray-800 sm:h-10 sm:px-4 sm:py-2 sm:text-[16px] dark:bg-white dark:text-black dark:hover:bg-gray-200"
                 onClick={onClick}
             >
                 {text}

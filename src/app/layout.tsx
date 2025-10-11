@@ -49,7 +49,7 @@ export default function RootLayout({
                     <Navbar />
                     <main className="flex max-w-[768px] flex-1 flex-col font-sans">
                         <VoxelModel />
-                        {/* {children} */}
+                        {children}
                     </main>
                     <Footer />
                 </ThemeProvider>
