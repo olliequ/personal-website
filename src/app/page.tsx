@@ -44,7 +44,7 @@ export default function Home() {
                             description:
                                 'Built a full-stack property listing app with React, NextJS, and MongoDB, featuring 1,500+ listings and a polished, UX-focused front-end.',
                             imageUrl: '/images/placeholder.png',
-                            href: 'https://github.com/olliequ/MachineLearningTradingBot',
+                            href: 'https://github.com/olliequ/property',
                             iconUrls: ['/images/typescript.png', '/images/react.png', '/images/css-3.png'],
                         },
                     ]}

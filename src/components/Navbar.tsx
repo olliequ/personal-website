@@ -11,7 +11,7 @@ export default function Navbar() {
     return (
         <header className="navbar fixed z-10 flex w-full flex-row justify-center bg-[var(--navbar-background)] p-2 font-sans backdrop-blur-lg">
             <div className="flex w-full max-w-[768px] flex-row items-center justify-between">
-                <div className="flex flex-row items-center gap-10">
+                <div className="flex flex-row items-center gap-4 sm:gap-10">
                     {/* Home button & icon */}
                     <Link href={'/'}>
                         <div className="group row flex gap-1 hover:cursor-pointer hover:opacity-80">

@@ -61,8 +61,8 @@ export default function SectionEntry(props: SectionEntryProps) {
                     className="h-[60px] w-[60px] rounded-2xl object-contain sm:h-[96px] sm:w-[96px]"
                 />
                 <div className="flex flex-col gap-2 sm:gap-3">
-                    <h2 className="text-lg font-semibold group-hover:underline sm:text-xl">{props.title}</h2>
-                    <p className="text-justify text-sm text-gray-600 sm:text-base dark:text-gray-300">{props.description}</p>
+                    <h2 className="text-lg leading-[1.3] font-semibold group-hover:underline sm:text-xl">{props.title}</h2>
+                    <p className="text-sm text-gray-600 sm:text-justify sm:text-base dark:text-gray-300">{props.description}</p>
                     {props.iconUrls && (
                         <div className="flex flex-row gap-3">
                             {props.iconUrls.map((iconUrl, index) => (
