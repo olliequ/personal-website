@@ -1,7 +1,6 @@
 import { MDXRemote } from 'next-mdx-remote/rsc'
-import { serialize } from 'next-mdx-remote/serialize'
-import { getPostBySlug, getPostSlugs } from '@/lib/blogs'
-import PageContentWrapper from '@/components/PageContentWrapper'
+import { getPostBySlug, getPostSlugs } from '@/lib/blog-posts'
+import PageContentWrapper, { PageContentWidthOptions } from '@/components/PageContentWrapper'
 import AnimatedWrapper from '@/components/AnimatedWrapper'
 import { rehypePlugins } from '@/lib/mdx'
 import React from 'react'
@@ -35,7 +34,7 @@ export default async function Page({ params }: Props) {
     const { meta, content } = getPostBySlug(slug)
 
     return (
-        <PageContentWrapper>
+        <PageContentWrapper size={PageContentWidthOptions.WIDE}>
             <AnimatedWrapper delay={0.2}>
                 <div className="flex w-full flex-col">
                     <div className="flex w-fit flex-col">
@@ -45,7 +44,7 @@ export default async function Page({ params }: Props) {
                     {meta.date && (
                         <p className="pt-2 pb-10 italic">{`${new Date(meta.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`}</p>
                     )}
-                    <div className="markdown-content-block flex flex-col gap-4">
+                    <div className="markdown-content-block flex flex-col gap-4 text-justify">
                         {/* MDXRemote compiles at build time in RSC. It serializes markdown to TSX. */}
                         <MDXRemote
                             source={content}

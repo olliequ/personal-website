@@ -1,0 +1,65 @@
+---
+title: 'Guide: Setting up multiple SSH keys locally'
+description: "Got 2 separate GitHub accounts and wanna use SSH for both on your machine? Here's how."
+date: '2025-10-11'
+image: '/images/keychain.png'
+---
+
+Most developers have separate git setups for work & personal projects. Recently, I wanted to make all my access via SSH, but I was wondering how I would do this considering when cloning a repo GitHub gives you a string to copy like `git@github.com:<account>/<repo_name>.git`.
+
+With multiple SSH keys this won't work -- we need to devise logic to get around this. This guide will also show you how to generate and pair an SSH key in general. **Note:** I'm using GitHub and MacOS, but everything should be transferable to GitLab, Windows, Linux etc.
+
+The first step is generating a key pair (let's say for your personal GitHub account):
+
+```bash
+ssh-keygen -t ed25519 -C "your_personal_email@example.com"
+```
+
+It's going to ask you where to save the pair. Do so in your `.ssh` folder, so at the prompt write `~/.ssh/id_ed25519_personal`. Here we've add the `personal` tag at the end of the name. For passphrase put nothing (just click enter). At this point you'll see 2 new files, `~/.ssh/id_ed25519_personal` (private key) and `~/.ssh/id_ed25519_personal.pub` (public key).
+
+Now that we've generated the key pair, we add it to our ssh-agent. `ssh-agent` is a background process that safely holds your private SSH keys in memory while your computer is running. It remembers your decrypted private keys so you don’t have to keep typing your passphrase every time you use them. If you don’t use `ssh-agent`, SSH has to read the key file from disk and decrypt it every time (meaning you’d re-enter the passphrase constantly). So let's add it using:
+
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519_personal
+```
+
+Now we need to hook it up with our personal GitHub account. Go to `Settings` then `SSH and GPG keys` and click `New SSH key`. Call the title whatever you want (perhaps `Personal Laptop`), put key type as `Authentication Key` and lastly paste the public key generated above into the text area field (`id_ed25519_personal.pub`).
+
+So if you do this process twice you'll have 2 key pairs (one for personal use and one for work). With this, we need to tell SSH which key to use depending on whether you’re pushing to your work GitHub account or your personal GitHub account. To do this we're gonna create a config file. In your terminal write `vim ~/.ssh/config`. This will open the scary vim editor, of which press `i` to enter 'edit mode' in vim and then paste the following:
+
+```bash
+# Work GitHub
+Host github-work
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_ed25519
+  IdentitiesOnly yes
+
+# Personal GitHub
+Host github-personal
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_ed25519_personal
+  IdentitiesOnly yes
+```
+
+Now the hardest part of the tutorial -- quitting vim. Enter `:wq` to save and close the file. At this point a file called `config` has been written to the `ssh` folder. Now we're good! Here's how to use it:
+
+For cloning repos (change the below to `github-work` if you want to access a 'work' repo):
+
+```bash
+git clone git@github-personal:your-username/your-repo.git
+```
+
+When making a new repo, GitHub may suggest to add the new repo to your local folder via the command `git remote add origin git@github.com:<account_name>/<repo_name>.git`, but we need to use our alias as your system won’t know whether to use your work key or your new personal key, since both point to `github.com`. So, we need to write: `git remote add origin git@github-personal:<account_name>/<repo_name>.git`. As an aside, if you already added the wrong origin, we can fix using the `set-url` command.
+
+Lastly, we can do a quick sanity check everything is in order with:
+
+```bash
+ssh -T git@github-personal
+```
+
+You should see a greeting validating you're correctly authenticated :)
+
+Ciao!

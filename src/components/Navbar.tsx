@@ -28,8 +28,8 @@ export default function Navbar() {
 
                     {/* Nav links */}
                     <div className="flex gap-5">
-                        <Link href={'/blogs'}>
-                            <p className="hover:underline">Blogs</p>
+                        <Link href={'/blog'}>
+                            <p className="hover:underline">Blog</p>
                         </Link>
                     </div>
                 </div>

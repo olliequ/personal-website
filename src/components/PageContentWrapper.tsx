@@ -1,9 +1,19 @@
 import React from 'react'
 
-interface PageContentWrapperProps {
-    children: React.ReactNode
+export enum PageContentWidthOptions {
+    SMALL,
+    WIDE,
 }
 
-export default function PageContentWrapper({ children }: PageContentWrapperProps) {
-    return <div className="z-[1] m-auto mt-[-190px] flex w-[600px] flex-col">{children}</div>
+interface PageContentWrapperProps {
+    children: React.ReactNode
+    size?: PageContentWidthOptions
+}
+
+export default function PageContentWrapper({ children, size = PageContentWidthOptions.SMALL }: PageContentWrapperProps) {
+    return (
+        <div className={`z-[1] m-auto mt-[-190px] flex ${size === PageContentWidthOptions.WIDE ? 'w-[768px]' : 'w-[600px]'} flex-col`}>
+            {children}
+        </div>
+    )
 }
