@@ -1,0 +1,75 @@
+---
+title: 'Guide: Implementing the singleton paradigm in TypeScript'
+description: 'A step-by-step guide to understanding and building singletons in TypeScript -- perfect for database clients, API wrappers etc.'
+date: '2025-10-12'
+image: '/images/single.png'
+---
+
+A **singleton** is a design pattern that ensures only one instance of a class exists throughout an application, providing a single, shared access point to it. In a project whereby services exist, there's usually room to implementing said services as singletons, and there are many benefits for doing so.
+
+A singleton in TypeScript is typically defined as a class which is lazily instatiated (so only instantiated when needed for the first time) and where only one instance of said class ever exists in the module's lifetime. This is made possible as the singleton’s lifetime is tied to the Node.js module system. Because Node caches `require` / `import` results, each import of this module across your app gets the same shared instance (as long as it’s in the same process).
+
+So what's the benefit of using a singleton?
+
+- Being instantiated lazily means its only created when needed. This improves startup time and avoids unnecessary setup if the resource isn’t used.
+- The biggest benefit is that it prevents the expensive reinitialization of objects/classes. Services that should be globally shared, like a database service or an API wrapper, have no need to be duplicated and singletons avoid this from happening.
+- It simplifies dependency management -- we can import it anywhere in the codebase and get the same instance without having to pass it through constructors etc.
+- Lastly, because it's one shared instance its behaviour is consistent and predictable so we don't have to worry about multiple competing instances holding conflicting state etc.
+
+Below I'll provide a simple example of implementing a database service as a singleton. After creating the file (`db-service.ts`), the first step is defining the class itself:
+
+```typescript
+import { CosmosClient, Database, Container } from '@azure/cosmos'
+import { azureCredential } from './azure-credential'
+
+export class DBService {
+    private client: CosmosClient
+    private userDatabase: Database
+    private users: Container
+
+    constructor(cosmosEndpoint: string) {
+        this.client = new CosmosClient({
+            endpoint: cosmosEndpoint,
+            aadCredentials: azureCredential(), // Credentials to authorise connection
+        })
+        this.userDatabase = this.client.database('user-data')
+        this.users = this.userDatabase.container('user-profiles')
+    }
+
+    async updateUser(user: User): Promise<User> {
+        await this.containers.users.items.upsert(user)
+        return user
+    }
+}
+```
+
+Here we're creating a wrapper to deal with writing queries to **[CosmosDB](https://azure.microsoft.com/en-us/products/cosmos-db)**, Microsoft Azure's NoSQL database offering. We have 3 private fields -- we don't want these fields to be manipulated outside of the public methods we define. So in this example, these fields are the Cosmos database client itself (which handles the connections), a database instance (so we have easy access to manipulating all containers in it -- perhaps we're deleting user data and we've got the user's data stored in various containers in the db), and a container which we'll directly/individually change in certain methods.
+
+Our class's constructor takes two arguments, the endpoint Cosmos has given us to access the remote database service and our credential file. We then define `userDatabase` and `users` using the strings used to initially create them in Cosmos. Once the constructor is executed the instance is created and we can start using the methods we expose. I've defined one method `updateUser` which we can see manipulates one of our private class fields.
+
+The last step, to truly make this a singleton is writing the following:
+
+```typescript
+let _dbService: DBService | undefined
+
+const dbService = () =>
+    (_dbService ??= new DBService(
+        process.env.COSMOSDB_ENDPOINT!, // Read private endpoint from env file (or keyvault service)
+    ))
+```
+
+The first part of this is defining a module-scoped **variable** that holds the one and only instance of the service once it exists. We pair it with a 'factory function' which returns the already instantiated `_dbService`, or if it's still undefined, we instantiate the database service for the first time (which is what the `??=` operator does).
+
+So how do we actually use it? Well, from here it's super simple! Let's say we're in a seperate file handling an endpoint which updates the user. In that case we would simply write:
+
+```typescript
+const updatedUser = await dbService().updateUser(user)
+```
+
+And that's it.
+
+Lastly, it's worth noting that even though it's one service instance, requests fired at the same time towards it are handled in parallel -- which is obviously super important. In our example, the CosmosDB client internally manages a connection pool which can consist of several simultaneous database connections -- this service object can maintain many active TCP connections to the database. So different user's queries can run in parallel on different database connections.
+
+And in combination with this, even though Node.js is single-threaded for JavaScript execution, **I/O is asynchronous**. So if 2 users hit our API at the same time, each I/O operation is handed off to be handled asynchronously and Node’s event loop continues handling other requests. When we get a response (e.g. the database responds) Node resumes that specific promise. All this combines to give us a fast, reliable, and consistent service implementation :)
+
+Ciao!
